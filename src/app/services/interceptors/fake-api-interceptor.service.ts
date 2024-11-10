@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { Profile } from '../../objects/bussinessObjects/profile';
+import { Profile } from '../../objects/bussinessObjects/Profile';
 
 
 const usersKey = 'profile-list';
@@ -34,20 +33,14 @@ export class FakeApiInterceptorService implements HttpInterceptor {
   
 }
 
-function basicDetails(user: any) {
-    const { id, username, firstName, lastName } = user;
-    return { id, username, firstName, lastName };
-}
-
 function getInitialProfileList() {
-    return [{id:1, username : "bmahfouz", firstName:"bassim", lastName:"mahfouz"},
-            {id:2, username : "wmahfouz", firstName:"wassim", lastName:"mahfouz"},
-            {id:3, username : "nmahfouz", firstName:"nassim", lastName:"mahfouz"}];
+    return [new Profile(1,"bassim","mahfouz",new Date(),['ADMINISTRATOR']),
+            new Profile(2,"wassim","mahfouz",new Date(),['ACCOUNTING']),
+            new Profile(3,"nassim","mahfouz",new Date(),['EMPLOYEE'])];
 }
 
 function getProfileList() {
-    // var profileList = users.map(x => basicDetails(x));
-    return getResponse(users);  
+    return getResponse({'profileList':users});  
 }
 
 function getProfileById(body : any) {
@@ -60,12 +53,12 @@ function deleteProfileById(body : any) {
     if (index !== -1) {
         users.splice(index, 1);
     }
-    return getResponse('OK');  
+    return getResponse({'status':'OK'});  
 }
 
 function addProfileById(body : any) {
-    users.push(body.profile)
-    return getResponse('OK');  
+    users.unshift(body.profile)
+    return getResponse({'status':'OK'});  
 }
 
 function updateProfileById(body : any) {
@@ -73,9 +66,9 @@ function updateProfileById(body : any) {
     users = users.map(user =>
         user.id === id ? { ...user, ...body.profile } : user
       );
-    return getResponse('OK');  
+    return getResponse({'status':'OK'});  
 }
 
 function getResponse(body : any){
-    return of(new HttpResponse({ status: 200, body: body })).pipe(delay(500)); 
+    return of(new HttpResponse({ status: 200, body: body })); 
 }

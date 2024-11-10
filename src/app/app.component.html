@@ -1,23 +1,81 @@
-<div>
-    <button (click)="getProfileList()">Fetch Data</button>
-</div>
-  
-<br/>
+<p-messages [(value)]="messages" [closable]="true" styleClass="top-center-messages" />
 
-<div>
-    <button (click)="deleteProfileById()">delete</button>
-</div>
-  
+<p-splitter [style]="{ height: '95vh' }" styleClass="mb-5" layout="vertical">
+    <ng-template pTemplate style="z-index: 1;">
+        <div class="col">
+            <form [formGroup]="formGroup" fxLayout="column" fxLayoutGap="5px">
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <div class="field row">
+                            <label for="firstname">First Name</label>
+                            <input type="text" pInputText formControlName="firstname"
+                            [style]="{ 'height': '38px','width':'100vh'}"/>
 
-<br/>
+                        </div>
+                        <div class="field row">
+                            <label for="lastname">Last Name</label>
+                            <input type="text" pInputText formControlName="lastname"
+                            [style]="{ 'height': '38px','width':'100vh'}" />
+                        </div>
+                    </div>
 
-<div>
-    <button (click)="addProfile()">add</button>
-</div>
+                    <div class="field col">
+                        <div class="field row  ">
+                                <label for="username">Birth Date</label><br/>
+                                <p-calendar formControlName="birthDate" 
+                                [iconDisplay]="'input'" 
+                                appendTo="body"
+                                dateFormat="dd/mm/yy"
+                                [showIcon]="true" [style]="{ 'height': '38px','width':'100vh'}" />
+                        </div>
 
-<br/>
+                        <div class="field row">
+                            <label for="permission">Permissions</label><br/>
+                            <p-multiSelect  [style]="{ 'height': '38px','width':'100vh'}"
+                                [options]="permissionList" 
+                                formControlName="permission"
+                                optionValue="code" 
+                                appendTo="body"
+                                optionLabel="name"
+                                placeholder="Select Permissions">
+                            </p-multiSelect>
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px" style="margin-top: 10px;">
+                    <button pButton type="submit" label="{{getSaveActionLabel()}}" icon="pi pi-save" class="p-button-success" (click)="onSaveClicked()"></button>
+                    <button pButton type="button" label="Clear" icon="pi pi-refresh" class="p-button-secondary" (click)="onClearClicked()"></button>
+                </div>
+            </form>
+        </div>
 
+    </ng-template>
+    <ng-template pTemplate style="z-index: -1;">
+        <div class="col flex align-items-center justify-content-center" style="height: 100%;">
+            <p-table [value]="profileList" [scrollable]="true" scrollHeight="300px" [tableStyle]="{ 'min-width': '100rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th></th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Birth Date</th>
+                        <th>Permissions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-profile>
+                    <tr>
+                        <td>
+                            <p-button (onClick)="selectProfile(profile, menu, $event)" icon="pi pi-ellipsis-v" />
+                            <p-menu #menu [model]="actionItems" [popup]="true" appendTo="body" />
+                        </td>
+                        <td>{{ profile.firstName }}</td>
+                        <td>{{ profile.lastName }}</td>
+                        <td>{{ formateDate(profile.birthDate) }}</td>
+                        <td>{{ profile.permission }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </ng-template>
+</p-splitter>
 
-<div>
-    <button (click)="updateProfile()">update</button>
-</div>

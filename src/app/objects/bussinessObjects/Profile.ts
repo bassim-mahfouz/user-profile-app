@@ -1,8 +1,9 @@
 export class Profile {
     constructor(
       public id: number,
-      public username: string,
       public firstName: string,
-      public lastName: string
+      public lastName: string,
+      public birthDate :Date,
+      public permission : string[]
     ) {}
   }
